@@ -1,11 +1,18 @@
-import { Text, View } from "react-native";
+import { View } from "react-native";
+
+import { Button } from "@/components/Button";
+import IconButton from "@/components/IconButton";
+import PlusIcon from '@/assets/icons/plus.svg'
 
 export default function Page() {
   return (
-    <View className="flex-1 items-center p-6">
-      <View className="flex-1 justify-center">
-        <Text className="font-heading text-6xl">Hello World</Text>
-        <Text className="font-body text-4xl text-neutral-600">This is the first page of your app.</Text>
+    <View className="flex-1 items-center justify-center space-y-4">
+      <View className="w-full p-10">
+        <Button title="Button" />
+      </View>
+
+      <View className="w-full p-10">
+        <IconButton icon={PlusIcon} iconSize={24} iconColor="red" />
       </View>
     </View>
   );
