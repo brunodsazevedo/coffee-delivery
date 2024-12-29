@@ -1,6 +1,10 @@
 import { SplashScreen, Stack } from 'expo-router'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
-import { useFonts, Roboto_400Regular, Roboto_700Bold } from '@expo-google-fonts/roboto'
+import {
+  useFonts,
+  Roboto_400Regular,
+  Roboto_700Bold,
+} from '@expo-google-fonts/roboto'
 import { Baloo2_700Bold } from '@expo-google-fonts/baloo-2'
 
 import '@/theme/global.css'
@@ -16,12 +20,12 @@ export default function RootLayout() {
   })
 
   useEffect(() => {
-    if(loaded || error) {
+    if (loaded || error) {
       SplashScreen.hideAsync()
     }
   }, [loaded, error])
 
-  if(!loaded && !error) {
+  if (!loaded && !error) {
     return null
   }
 

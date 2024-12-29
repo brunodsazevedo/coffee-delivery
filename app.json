@@ -3,6 +3,9 @@
     "name": "Coffee Delivery",
     "slug": "coffee-delivery",
     "scheme": "coffee-delivery",
+    "experiments": {
+      "typedRoutes": true
+    },
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

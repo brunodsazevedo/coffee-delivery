@@ -1,16 +1,15 @@
 /** @type {import('tailwindcss').Config} */
 
-const colors = require("./src/theme/colors");
-const fontFamily = require("./src/theme/fontFamily");
+import colors from './src/theme/colors'
+import fontFamily from './src/theme/fontFamily'
 
-module.exports = {
-  content: ["./src/**/*.{js,jsx,ts,tsx}"],
-  presets: [require("nativewind/preset")],
-  theme: {
-    extend: {
-      colors,
-      fontFamily,
-    },
+export const content = ['./src/**/*.{js,jsx,ts,tsx}']
+export const presets = [require('nativewind/preset')]
+export const theme = {
+  extend: {
+    colors,
+    fontFamily,
   },
-  plugins: [],
-};
+}
+
+export const plugins = []
