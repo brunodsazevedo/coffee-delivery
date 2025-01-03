@@ -20,7 +20,7 @@ export function CoffeeCarouselItem({ data, onPress }: Props) {
   return (
     <TouchableOpacity
       activeOpacity={1}
-      className="w-56 px-4 pb-5 items-center gap-y-4 rounded-tl-md rounded-tr-[36px] rounded-br-md rounded-bl-[36px] border border-neutral-300 bg-neutral-200"
+      className="w-56 px-4 pb-5 mx-8 items-center gap-y-4 rounded-tl-md rounded-tr-[36px] rounded-br-md rounded-bl-[36px] border border-neutral-300 bg-neutral-200"
       onPress={onPress}
     >
       <View className="-mt-8">

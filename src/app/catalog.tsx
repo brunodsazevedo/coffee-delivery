@@ -1,5 +1,4 @@
-import { View, ScrollView, Text, Image, Dimensions } from 'react-native'
-import RNCarousel from 'react-native-reanimated-carousel'
+import { View, ScrollView, Text, Image, FlatList } from 'react-native'
 import { router } from 'expo-router'
 
 import { Input } from '@/components/Input'
@@ -14,8 +13,6 @@ import { sectionListFormatted } from '@/utils/arrayUtils'
 
 import SearchIcon from '@/assets/icons/magnifying-glass.svg'
 import CoffeeBeansImg from '@/assets/images/coffee-beans-img.png'
-
-const width = Dimensions.get('window').width
 
 export default function Catalog() {
   const coffeeSectionData = sectionListFormatted(coffees, 'type')
@@ -60,24 +57,20 @@ export default function Catalog() {
           </View>
         </View>
 
-        <View className="-mt-24">
-          <RNCarousel
+        <View className="-mt-36">
+          <FlatList
             data={featuredCoffees}
-            mode="parallax"
-            modeConfig={{
-              parallaxScrollingScale: 1.1, // Controla o tamanho dos itens não ativos
-              parallaxScrollingOffset: 200, // Reduz o espaço entre os itens
-              parallaxAdjacentItemScale: 0.94, // Ajusta o tamanho dos itens adjacentes
+            keyExtractor={(item, index) => item.id + index}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{
+              paddingTop: 64,
             }}
-            width={width}
-            height={336}
             renderItem={({ item }) => (
-              <View className="mt-12 ml-12">
-                <CoffeeCarouselItem
-                  data={item}
-                  onPress={() => handleCoffeeDetails(item)}
-                />
-              </View>
+              <CoffeeCarouselItem
+                data={item}
+                onPress={() => handleCoffeeDetails(item)}
+              />
             )}
           />
         </View>
