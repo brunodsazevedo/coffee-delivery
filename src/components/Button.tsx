@@ -3,19 +3,43 @@ import { twMerge } from 'tailwind-merge'
 
 type Props = TouchableOpacityProps & {
   title: string
+  variant?: 'filled' | 'outlined'
+  textColor?: string
 }
 
-export function Button({ title, className, ...rest }: Props) {
+export function Button({
+  title,
+  variant = 'filled',
+  textColor,
+  className,
+  ...rest
+}: Props) {
+  const VARIANT = {
+    filled: 'bg-primary-700',
+    outlined: 'border border-primary-700',
+  }
+
+  const TEXT = {
+    filled: textColor || 'text-white',
+    outlined: textColor || 'text-primary-700',
+  }
+
   return (
     <TouchableOpacity
       activeOpacity={0.7}
       className={twMerge(
-        'px-2 py-3 items-center justify-center rounded-md bg-primary-700',
+        'px-2 py-3 items-center justify-center rounded-md',
+        VARIANT[variant],
         className,
       )}
       {...rest}
     >
-      <Text className="font-button text-sm leading-relaxed uppercase text-white">
+      <Text
+        className={twMerge(
+          'font-button text-sm leading-relaxed uppercase text-white',
+          TEXT[variant],
+        )}
+      >
         {title}
       </Text>
     </TouchableOpacity>

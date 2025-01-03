@@ -9,7 +9,13 @@ type Props = TouchableOpacityProps & {
   iconSize?: number
 }
 
-export default function IconButton({ icon: Icon, iconSize = 20, iconColor, className, ...rest}: Props) {
+export function IconButton({
+  icon: Icon,
+  iconSize = 20,
+  iconColor,
+  className,
+  ...rest
+}: Props) {
   return (
     <TouchableOpacity
       activeOpacity={0.7}
@@ -19,13 +25,7 @@ export default function IconButton({ icon: Icon, iconSize = 20, iconColor, class
       )}
       {...rest}
     >
-      {Icon && (
-        <Icon
-          height={iconSize}
-          width={iconSize}
-          color={iconColor}
-        />
-      )}
+      {Icon && <Icon height={iconSize} width={iconSize} color={iconColor} />}
     </TouchableOpacity>
   )
 }

@@ -1,5 +1,6 @@
 import { View, ScrollView, Text, Image, Dimensions } from 'react-native'
 import RNCarousel from 'react-native-reanimated-carousel'
+import { router } from 'expo-router'
 
 import { Input } from '@/components/Input'
 import { CatalogHeader } from '@/components/CatalogHeader'
@@ -7,7 +8,7 @@ import { CoffeeCarouselItem } from '@/components/CoffeeCarouselItem'
 import { SelectButton } from '@/components/SelectButton'
 import { CoffeeCardItem } from '@/components/CoffeeCardItem'
 
-import { featuredCoffees, coffees } from '@/constants/coffees'
+import { featuredCoffees, coffees, CoffeeDTO } from '@/constants/coffees'
 
 import { sectionListFormatted } from '@/utils/arrayUtils'
 
@@ -18,6 +19,15 @@ const width = Dimensions.get('window').width
 
 export default function Catalog() {
   const coffeeSectionData = sectionListFormatted(coffees, 'type')
+
+  function handleCoffeeDetails(data: CoffeeDTO) {
+    router.push({
+      pathname: '/product',
+      params: {
+        productData: JSON.stringify(data),
+      },
+    })
+  }
 
   return (
     <View className="flex-1 bg-neutral-100">
@@ -63,7 +73,10 @@ export default function Catalog() {
             height={336}
             renderItem={({ item }) => (
               <View className="mt-12 ml-12">
-                <CoffeeCarouselItem data={item} />
+                <CoffeeCarouselItem
+                  data={item}
+                  onPress={() => handleCoffeeDetails(item)}
+                />
               </View>
             )}
           />
@@ -99,7 +112,11 @@ export default function Catalog() {
               </Text>
 
               {section.data.map((item, index) => (
-                <CoffeeCardItem key={index} data={item} />
+                <CoffeeCardItem
+                  key={index}
+                  data={item}
+                  onPress={() => handleCoffeeDetails(item)}
+                />
               ))}
             </View>
           ))}
