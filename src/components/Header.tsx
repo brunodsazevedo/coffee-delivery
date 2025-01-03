@@ -41,7 +41,7 @@ export function Header({
           <View className="flex-1 items-center justify-center">
             <Text
               className={twMerge(
-                'font-heading text-base text-center',
+                'font-heading text-xl text-center',
                 titleColor,
               )}
             >
@@ -51,7 +51,7 @@ export function Header({
         )}
       </View>
 
-      {rightElement && rightElement}
+      <View>{rightElement && rightElement}</View>
     </SafeAreaView>
   )
 }

@@ -2,12 +2,15 @@ import { useState } from 'react'
 import { View, Text, Image } from 'react-native'
 import { router, useLocalSearchParams } from 'expo-router'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { twMerge } from 'tailwind-merge'
 
 import { Header } from '@/components/Header'
 import { IconButton } from '@/components/IconButton'
 import { Button } from '@/components/Button'
 
 import themeColors from '@/theme/colors'
+
+import { useCart } from '@/hooks/useCart'
 
 import { CoffeeDTO } from '@/constants/coffees'
 
@@ -16,7 +19,6 @@ import SmokeIcon from '@/assets/icons/smoke.svg'
 import ShoppingCartIcon from '@/assets/icons/shopping-cart.svg'
 import PlusIcon from '@/assets/icons/plus.svg'
 import MinusIcon from '@/assets/icons/minus.svg'
-import { twMerge } from 'tailwind-merge'
 
 type RouteParamsProps = {
   productData: string
@@ -27,6 +29,8 @@ export default function Product() {
   const [sizeCupSelected, setSizeCupSelected] = useState<
     '114ml' | '140ml' | '227ml'
   >('114ml')
+
+  const { onAddCartItem } = useCart()
 
   const routeParams = useLocalSearchParams<RouteParamsProps>()
 
@@ -56,7 +60,20 @@ export default function Product() {
   }
 
   function handleAddCart() {
-    router.push('/cart')
+    const newCartItem = {
+      ...productData,
+      amount,
+      size: sizeCupSelected,
+    }
+
+    onAddCartItem(newCartItem)
+
+    router.push({
+      pathname: '/catalog',
+      params: {
+        newCartItem: JSON.stringify(newCartItem),
+      },
+    })
   }
 
   return (

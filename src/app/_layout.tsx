@@ -10,6 +10,7 @@ import { Baloo2_700Bold } from '@expo-google-fonts/baloo-2'
 
 import '@/theme/global.css'
 import { useEffect } from 'react'
+import { CartProvider } from '@/contexts/CartContext'
 
 SplashScreen.preventAutoHideAsync()
 
@@ -33,11 +34,13 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
-        <Stack
-          screenOptions={{
-            headerShown: false,
-          }}
-        />
+        <CartProvider>
+          <Stack
+            screenOptions={{
+              headerShown: false,
+            }}
+          />
+        </CartProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   )
