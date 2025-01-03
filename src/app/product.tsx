@@ -30,7 +30,7 @@ export default function Product() {
     '114ml' | '140ml' | '227ml'
   >('114ml')
 
-  const { onAddCartItem } = useCart()
+  const { cart, onAddCartItem } = useCart()
 
   const routeParams = useLocalSearchParams<RouteParamsProps>()
 
@@ -76,15 +76,36 @@ export default function Product() {
     })
   }
 
+  function handleGoCart() {
+    router.push('/cart')
+  }
+
   return (
     <View className="flex-1 bg-neutral-900">
       <Header
         iconColor="white"
         rightElement={
-          <IconButton
-            iconColor={themeColors.primary[500]}
-            icon={ShoppingCartIcon}
-          />
+          <View>
+            <IconButton
+              icon={ShoppingCartIcon}
+              iconSize={28}
+              iconColor={
+                cart.length === 0
+                  ? themeColors.secondary[700]
+                  : themeColors.primary[500]
+              }
+              className="p-0"
+              onPress={handleGoCart}
+            />
+
+            {cart.length > 0 && (
+              <View className="absolute -top-4 -right-4 items-center justify-center h-5 w-5 rounded-full bg-primary-500">
+                <Text className="font-body text-sm text-white">
+                  {cart.length}
+                </Text>
+              </View>
+            )}
+          </View>
         }
         onBack={handleBack}
       />
