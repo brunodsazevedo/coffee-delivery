@@ -40,7 +40,11 @@
   "expo": {
     "doctor": {
       "reactNativeDirectoryCheck": {
-        "exclude": ["@expo-google-fonts/baloo-2", "@expo-google-fonts/roboto", "tailwindcss"]
+        "exclude": [
+          "@expo-google-fonts/baloo-2",
+          "@expo-google-fonts/roboto",
+          "tailwindcss"
+        ]
       }
     }
   }
