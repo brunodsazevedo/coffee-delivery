@@ -57,6 +57,10 @@ export default function Cart() {
     onRemoveCartItem(cartItem)
   }
 
+  function handleFinish() {
+    router.push('/finish')
+  }
+
   return (
     <View className="flex-1 bg-neutral-100">
       <Header title="Carrinho" onBack={handleBack} />
@@ -104,7 +108,11 @@ export default function Cart() {
             </Text>
           </View>
 
-          <Button title="Confirmar pedido" className="bg-secondary-700" />
+          <Button
+            title="Confirmar pedido"
+            className="bg-secondary-700"
+            onPress={handleFinish}
+          />
         </SafeAreaView>
       )}
     </View>
