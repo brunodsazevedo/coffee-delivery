@@ -53,10 +53,11 @@ export default function Catalog() {
     position: 'absolute',
     zIndex: 1,
     width: '100%',
+    paddingTop: safeAreaInsets.top,
     backgroundColor: themeColors.neutral[100],
     opacity: interpolate(
       scrollY.value,
-      [400, 462],
+      [400, 436],
       [0, 1],
       Extrapolation.CLAMP,
     ),
@@ -64,7 +65,7 @@ export default function Catalog() {
       {
         translateY: interpolate(
           scrollY.value,
-          [400, 462],
+          [400, 436],
           [-40, 0],
           Extrapolation.CLAMP,
         ),
@@ -123,7 +124,10 @@ export default function Catalog() {
 
   return (
     <View className="flex-1 bg-neutral-100">
-      <Animated.View style={headerFixedStyle}>
+      <Animated.View
+        style={headerFixedStyle}
+        className="shadow shadow-black/10 bg-neutral-100"
+      >
         <CatalogFixedHeader />
       </Animated.View>
 

@@ -20,10 +20,7 @@ export function CatalogFixedHeader() {
   }
 
   return (
-    <SafeAreaView
-      edges={['top']}
-      className="shadow shadow-black/10 bg-neutral-100"
-    >
+    <View className="bg-neutral-100">
       <View className="flex-row items-center justify-between px-8 py-2 border-b border-b-neutral-200">
         <View className="flex-row items-center gap-x-1">
           <MapPinIcon height={20} width={20} color={themeColors.primary[500]} />
@@ -75,6 +72,6 @@ export function CatalogFixedHeader() {
           </View>
         </View>
       </View>
-    </SafeAreaView>
+    </View>
   )
 }
