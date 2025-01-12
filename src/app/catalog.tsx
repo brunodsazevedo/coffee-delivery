@@ -1,17 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect } from 'react'
-import { View, Text, Image, FlatList } from 'react-native'
+import { View, Text, Image, SectionList, SectionListProps } from 'react-native'
 import { router } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Animated, {
-  Easing,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
-  withDelay,
   useAnimatedScrollHandler,
   Extrapolation,
   interpolate,
+  SlideInUp,
+  FadeInDown,
+  SlideInRight,
 } from 'react-native-reanimated'
 
 import { Input } from '@/components/Input'
@@ -30,24 +30,22 @@ import { sectionListFormatted } from '@/utils/arrayUtils'
 import SearchIcon from '@/assets/icons/magnifying-glass.svg'
 import CoffeeBeansImg from '@/assets/images/coffee-beans-img.png'
 
+type SectionProps = {
+  title: string
+  data: CoffeeDTO[]
+}
+
+const SectionListAnimated =
+  Animated.createAnimatedComponent<SectionListProps<CoffeeDTO, SectionProps>>(
+    SectionList,
+  )
+
 export default function Catalog() {
   const safeAreaInsets = useSafeAreaInsets()
 
-  const headerTranslateY = useSharedValue(-500)
-  const featuredTranslateX = useSharedValue(500)
-  const coffeeSectionTranslateY = useSharedValue(500)
+  const coffeeSectionData = sectionListFormatted(coffees, 'type')
+
   const scrollY = useSharedValue(0)
-
-  const scrollHandler = useAnimatedScrollHandler({
-    onScroll: (event) => {
-      scrollY.value = event.contentOffset.y
-    },
-  })
-
-  const headerStyle = useAnimatedStyle(() => ({
-    paddingTop: safeAreaInsets.top,
-    transform: [{ translateY: headerTranslateY.value }],
-  }))
 
   const headerFixedStyle = useAnimatedStyle(() => ({
     position: 'absolute',
@@ -57,7 +55,7 @@ export default function Catalog() {
     backgroundColor: themeColors.neutral[100],
     opacity: interpolate(
       scrollY.value,
-      [400, 436],
+      [478, 490],
       [0, 1],
       Extrapolation.CLAMP,
     ),
@@ -65,7 +63,7 @@ export default function Catalog() {
       {
         translateY: interpolate(
           scrollY.value,
-          [400, 436],
+          [478, 490],
           [-40, 0],
           Extrapolation.CLAMP,
         ),
@@ -73,15 +71,11 @@ export default function Catalog() {
     ],
   }))
 
-  const featuredStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: featuredTranslateX.value }],
-  }))
-
-  const coffeeSectionStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: coffeeSectionTranslateY.value }],
-  }))
-
-  const coffeeSectionData = sectionListFormatted(coffees, 'type')
+  const scrollHandler = useAnimatedScrollHandler({
+    onScroll: (event) => {
+      scrollY.value = event.contentOffset.y
+    },
+  })
 
   function handleCoffeeDetails(data: CoffeeDTO) {
     router.push({
@@ -92,39 +86,123 @@ export default function Catalog() {
     })
   }
 
-  function onStartAnimations() {
-    headerTranslateY.value = withDelay(
-      500,
-      withTiming(0, {
-        duration: 800,
-        easing: Easing.out(Easing.ease),
-      }),
-    )
-
-    featuredTranslateX.value = withDelay(
-      1000,
-      withTiming(0, {
-        duration: 500,
-        easing: Easing.out(Easing.ease),
-      }),
-    )
-
-    coffeeSectionTranslateY.value = withDelay(
-      1000,
-      withTiming(0, {
-        duration: 500,
-        easing: Easing.out(Easing.ease),
-      }),
-    )
-  }
-
-  useEffect(() => {
-    onStartAnimations()
-  }, [])
-
   return (
     <View className="flex-1 bg-neutral-100">
       <Animated.View
+        style={headerFixedStyle}
+        className="shadow shadow-black/10 bg-neutral-100"
+      >
+        <CatalogFixedHeader />
+      </Animated.View>
+
+      <SectionListAnimated
+        sections={coffeeSectionData}
+        keyExtractor={(item, index) => item.id + index}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          paddingBottom: 74,
+        }}
+        onScroll={scrollHandler}
+        renderItem={({ item, index }) => (
+          <CoffeeCardItem
+            index={index}
+            data={item}
+            onPress={() => handleCoffeeDetails(item)}
+          />
+        )}
+        renderSectionHeader={({ section }) => (
+          <Animated.View
+            entering={FadeInDown.delay(1300).duration(800)}
+            className="mx-8"
+          >
+            <Text className="font-heading text-base mb-6 text-neutral-600">
+              {section.title === 'traditional' && 'Tradicionais'}
+              {section.title === 'sweet' && 'Doces'}
+              {section.title === 'specialty' && 'Especiais'}
+            </Text>
+          </Animated.View>
+        )}
+        ListHeaderComponent={
+          <View className="mb-10">
+            <Animated.View
+              entering={SlideInUp.duration(800).delay(500)}
+              style={{
+                paddingTop: safeAreaInsets.top,
+              }}
+              className="bg-neutral-900"
+            >
+              <CatalogHeader />
+
+              <Animated.View
+                entering={FadeInDown.delay(1100)}
+                className="px-8 pt-10 gap-y-4"
+              >
+                <Text className="font-heading text-xl leading-[130%] text-white">
+                  Encontre o café perfeito para{'\n'}
+                  qualquer hora do dia
+                </Text>
+
+                <View className="items-end">
+                  <View className="w-full">
+                    <Input placeholder="Pesquisar" leftIcon={SearchIcon} />
+                  </View>
+
+                  <View>
+                    <Image
+                      alt="Grãos de café"
+                      source={CoffeeBeansImg}
+                      className="w-32 h-32"
+                    />
+                  </View>
+                </View>
+              </Animated.View>
+            </Animated.View>
+
+            <View className="-mt-32">
+              <Animated.FlatList
+                entering={SlideInRight.delay(1300).duration(800)}
+                data={featuredCoffees}
+                keyExtractor={(item, index) => item.id + index}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{
+                  paddingTop: 64,
+                }}
+                renderItem={({ item }) => (
+                  <CoffeeCarouselItem
+                    data={item}
+                    onPress={() => handleCoffeeDetails(item)}
+                  />
+                )}
+              />
+            </View>
+
+            <Animated.View
+              entering={FadeInDown.delay(1300).duration(800)}
+              className="py-4 px-8 mt-8 gap-y-3"
+            >
+              <Text className="font-heading text-base text-neutral-700">
+                Nossos cafés
+              </Text>
+
+              <View className="flex-row items-center gap-x-2">
+                <View>
+                  <SelectButton title="Tradicionais" />
+                </View>
+
+                <View>
+                  <SelectButton title="Doces" />
+                </View>
+
+                <View>
+                  <SelectButton title="Especiais" />
+                </View>
+              </View>
+            </Animated.View>
+          </View>
+        }
+      />
+      {/* <Animated.View
         style={headerFixedStyle}
         className="shadow shadow-black/10 bg-neutral-100"
       >
@@ -222,7 +300,7 @@ export default function Catalog() {
             </View>
           ))}
         </Animated.View>
-      </Animated.ScrollView>
+      </Animated.ScrollView> */}
     </View>
   )
 }

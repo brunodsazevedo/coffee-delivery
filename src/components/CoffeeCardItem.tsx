@@ -1,22 +1,28 @@
 import { View, Text, Image, TouchableOpacity } from 'react-native'
+import Animated, { FadeInDown } from 'react-native-reanimated'
 
 import { CoffeeDTO } from '@/constants/coffees'
 
 type Props = {
+  index: number
   data: CoffeeDTO
   onPress?: () => void
 }
 
-export function CoffeeCardItem({ data, onPress }: Props) {
+const TouchableOpacityAnimated =
+  Animated.createAnimatedComponent(TouchableOpacity)
+
+export function CoffeeCardItem({ index, data, onPress }: Props) {
   const priceFormatted = new Intl.NumberFormat('pt-BR', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   }).format(data.price)
 
   return (
-    <TouchableOpacity
+    <TouchableOpacityAnimated
+      entering={FadeInDown.delay(1300 + 200 * index).duration(800)}
       activeOpacity={0.7}
-      className="flex-row px-4 mb-10 gap-x-4 border rounded-tl-md rounded-tr-[36px] rounded-br-md rounded-bl-[36px] border-neutral-300 bg-neutral-200"
+      className="flex-row mx-8 px-4 mb-10 gap-x-4 border rounded-tl-md rounded-tr-[36px] rounded-br-md rounded-bl-[36px] border-neutral-300 bg-neutral-200"
       onPress={onPress}
     >
       <View className="-mt-4">
@@ -44,6 +50,6 @@ export function CoffeeCardItem({ data, onPress }: Props) {
           </Text>
         </View>
       </View>
-    </TouchableOpacity>
+    </TouchableOpacityAnimated>
   )
 }
