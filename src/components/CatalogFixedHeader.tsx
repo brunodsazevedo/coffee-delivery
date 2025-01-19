@@ -10,9 +10,19 @@ import themeColors from '@/theme/colors'
 
 import MapPinIcon from '@/assets/icons/map-pin.svg'
 import ShoppingCartIcon from '@/assets/icons/shopping-cart.svg'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { coffeeTypeTranslation } from '@/utils/coffeeTypeTranslation'
 
-export function CatalogFixedHeader() {
+type Props = {
+  sectionData: { title: string }[]
+  indexSectionFocused: number
+  onScrollToSection: (sectionIndex: number) => void
+}
+
+export function CatalogFixedHeader({
+  sectionData,
+  indexSectionFocused,
+  onScrollToSection,
+}: Props) {
   const { cart } = useCart()
 
   function handleGoCart() {
@@ -59,17 +69,15 @@ export function CatalogFixedHeader() {
         </Text>
 
         <View className="flex-row items-center gap-x-2">
-          <View>
-            <SelectButton title="Tradicionais" />
-          </View>
-
-          <View>
-            <SelectButton title="Doces" />
-          </View>
-
-          <View>
-            <SelectButton title="Especiais" />
-          </View>
+          {sectionData.map((item, index) => (
+            <View key={index}>
+              <SelectButton
+                title={coffeeTypeTranslation(item.title)}
+                selected={index === indexSectionFocused}
+                onPress={() => onScrollToSection(index)}
+              />
+            </View>
+          ))}
         </View>
       </View>
     </View>

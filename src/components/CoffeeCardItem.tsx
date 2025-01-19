@@ -22,7 +22,7 @@ export function CoffeeCardItem({ index, data, onPress }: Props) {
     <TouchableOpacityAnimated
       entering={FadeInDown.delay(1300 + 200 * index).duration(800)}
       activeOpacity={0.7}
-      className="flex-row mx-8 px-4 mb-10 gap-x-4 border rounded-tl-md rounded-tr-[36px] rounded-br-md rounded-bl-[36px] border-neutral-300 bg-neutral-200"
+      className="flex-row px-4 mb-10 gap-x-4 border rounded-tl-md rounded-tr-[36px] rounded-br-md rounded-bl-[36px] border-neutral-300 bg-neutral-200"
       onPress={onPress}
     >
       <View className="-mt-4">

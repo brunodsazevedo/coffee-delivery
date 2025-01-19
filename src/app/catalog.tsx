@@ -1,11 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { View, Text, Image, SectionList, SectionListProps } from 'react-native'
+import { useEffect, useRef, useState } from 'react'
+import { View, Text, Image, ViewToken, FlatList } from 'react-native'
 import { router } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
-  withTiming,
   useAnimatedScrollHandler,
   Extrapolation,
   interpolate,
@@ -29,23 +29,40 @@ import { sectionListFormatted } from '@/utils/arrayUtils'
 
 import SearchIcon from '@/assets/icons/magnifying-glass.svg'
 import CoffeeBeansImg from '@/assets/images/coffee-beans-img.png'
+import { coffeeTypeTranslation } from '@/utils/coffeeTypeTranslation'
 
-type SectionProps = {
-  title: string
-  data: CoffeeDTO[]
+type ChangeCoffeeSectionListProps = {
+  viewableItems: ViewToken[]
+  changed: ViewToken[]
 }
 
-const SectionListAnimated =
-  Animated.createAnimatedComponent<SectionListProps<CoffeeDTO, SectionProps>>(
-    SectionList,
+export default function Catalog() {
+  const [indexCoffeeSectionList, setIndexCoffeeSectionList] = useState(0)
+  const [isScrolling, setIsScrolling] = useState(true)
+
+  const flatListRef = useRef<FlatList>(null)
+
+  const indexCoffeeSectionChanged = useRef(
+    (info: ChangeCoffeeSectionListProps) => {
+      const index = info.viewableItems[0].index!
+      setIndexCoffeeSectionList(index)
+    },
   )
 
-export default function Catalog() {
   const safeAreaInsets = useSafeAreaInsets()
 
   const coffeeSectionData = sectionListFormatted(coffees, 'type')
 
   const scrollY = useSharedValue(0)
+
+  const flatListStyle = useAnimatedStyle(() => ({
+    paddingTop: interpolate(
+      scrollY.value,
+      [590, 620],
+      [0, safeAreaInsets.top + 150],
+      Extrapolation.CLAMP,
+    ),
+  }))
 
   const headerFixedStyle = useAnimatedStyle(() => ({
     position: 'absolute',
@@ -55,7 +72,7 @@ export default function Catalog() {
     backgroundColor: themeColors.neutral[100],
     opacity: interpolate(
       scrollY.value,
-      [478, 490],
+      [590, 620],
       [0, 1],
       Extrapolation.CLAMP,
     ),
@@ -63,8 +80,28 @@ export default function Catalog() {
       {
         translateY: interpolate(
           scrollY.value,
-          [478, 490],
+          [590, 620],
           [-40, 0],
+          Extrapolation.CLAMP,
+        ),
+      },
+    ],
+  }))
+
+  const headerStyle = useAnimatedStyle(() => ({
+    marginBottom: 40,
+    opacity: interpolate(
+      scrollY.value,
+      [590, 620],
+      [1, 0],
+      Extrapolation.CLAMP,
+    ),
+    transform: [
+      {
+        translateY: interpolate(
+          scrollY.value,
+          [590, 620],
+          [0, -500],
           Extrapolation.CLAMP,
         ),
       },
@@ -86,44 +123,69 @@ export default function Catalog() {
     })
   }
 
+  function handleScrollToSection(sectionIndex: number) {
+    setIndexCoffeeSectionList(sectionIndex)
+    setIsScrolling(false)
+  }
+
+  useEffect(() => {
+    if (!isScrolling) {
+      flatListRef.current?.scrollToIndex({
+        index: indexCoffeeSectionList,
+        animated: true,
+      })
+
+      setIsScrolling(true)
+    }
+  }, [isScrolling])
+
   return (
     <View className="flex-1 bg-neutral-100">
       <Animated.View
         style={headerFixedStyle}
         className="shadow shadow-black/10 bg-neutral-100"
       >
-        <CatalogFixedHeader />
+        <CatalogFixedHeader
+          sectionData={coffeeSectionData}
+          indexSectionFocused={indexCoffeeSectionList}
+          onScrollToSection={handleScrollToSection}
+        />
       </Animated.View>
 
-      <SectionListAnimated
-        sections={coffeeSectionData}
-        keyExtractor={(item, index) => item.id + index}
+      <Animated.FlatList
+        ref={flatListRef}
+        data={coffeeSectionData}
+        keyExtractor={(item, index) => item.title + index}
         showsVerticalScrollIndicator={false}
+        style={flatListStyle}
         contentContainerStyle={{
-          paddingBottom: 74,
+          paddingBottom: 90,
         }}
         onScroll={scrollHandler}
-        renderItem={({ item, index }) => (
-          <CoffeeCardItem
-            index={index}
-            data={item}
-            onPress={() => handleCoffeeDetails(item)}
-          />
-        )}
-        renderSectionHeader={({ section }) => (
+        onViewableItemsChanged={indexCoffeeSectionChanged.current}
+        renderItem={({ item: section }) => (
           <Animated.View
             entering={FadeInDown.delay(1300).duration(800)}
-            className="mx-8"
+            className="mx-8 py-4"
           >
             <Text className="font-heading text-base mb-6 text-neutral-600">
               {section.title === 'traditional' && 'Tradicionais'}
               {section.title === 'sweet' && 'Doces'}
               {section.title === 'specialty' && 'Especiais'}
             </Text>
+
+            {section.data.map((item, index) => (
+              <CoffeeCardItem
+                key={index}
+                index={index}
+                data={item}
+                onPress={() => handleCoffeeDetails(item)}
+              />
+            ))}
           </Animated.View>
         )}
         ListHeaderComponent={
-          <View className="mb-10">
+          <Animated.View style={headerStyle}>
             <Animated.View
               entering={SlideInUp.duration(800).delay(500)}
               style={{
@@ -186,121 +248,20 @@ export default function Catalog() {
               </Text>
 
               <View className="flex-row items-center gap-x-2">
-                <View>
-                  <SelectButton title="Tradicionais" />
-                </View>
-
-                <View>
-                  <SelectButton title="Doces" />
-                </View>
-
-                <View>
-                  <SelectButton title="Especiais" />
-                </View>
+                {coffeeSectionData.map((section, sectionIndex) => (
+                  <View key={sectionIndex}>
+                    <SelectButton
+                      title={coffeeTypeTranslation(section.title)}
+                      selected={sectionIndex === indexCoffeeSectionList}
+                      onPress={() => handleScrollToSection(sectionIndex)}
+                    />
+                  </View>
+                ))}
               </View>
             </Animated.View>
-          </View>
+          </Animated.View>
         }
       />
-      {/* <Animated.View
-        style={headerFixedStyle}
-        className="shadow shadow-black/10 bg-neutral-100"
-      >
-        <CatalogFixedHeader />
-      </Animated.View>
-
-      <Animated.ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 74 }}
-        onScroll={scrollHandler}
-        scrollEventThrottle={16}
-      >
-        <Animated.View style={headerStyle} className="bg-neutral-900">
-          <CatalogHeader />
-
-          <View className="px-8 gap-y-4">
-            <Text className="font-heading text-xl leading-[130%] text-white">
-              Encontre o café perfeito para{'\n'}
-              qualquer hora do dia
-            </Text>
-
-            <View className="pt-6 items-end">
-              <View className="w-full">
-                <Input placeholder="Pesquisar" leftIcon={SearchIcon} />
-              </View>
-
-              <View>
-                <Image
-                  alt="Grãos de café"
-                  source={CoffeeBeansImg}
-                  className="w-32 h-32"
-                />
-              </View>
-            </View>
-          </View>
-        </Animated.View>
-
-        <Animated.View style={featuredStyle} className="-mt-36">
-          <FlatList
-            data={featuredCoffees}
-            keyExtractor={(item, index) => item.id + index}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{
-              paddingTop: 64,
-            }}
-            renderItem={({ item }) => (
-              <CoffeeCarouselItem
-                data={item}
-                onPress={() => handleCoffeeDetails(item)}
-              />
-            )}
-          />
-        </Animated.View>
-
-        <Animated.View
-          style={coffeeSectionStyle}
-          className="py-4 px-8 mt-4 gap-y-3"
-        >
-          <Text className="font-heading text-base text-neutral-700">
-            Nossos cafés
-          </Text>
-
-          <View className="flex-row items-center gap-x-2">
-            <View>
-              <SelectButton title="Tradicionais" />
-            </View>
-
-            <View>
-              <SelectButton title="Doces" />
-            </View>
-
-            <View>
-              <SelectButton title="Especiais" />
-            </View>
-          </View>
-        </Animated.View>
-
-        <Animated.View style={coffeeSectionStyle} className="px-8 pt-8">
-          {coffeeSectionData.map((section, sectionIndex) => (
-            <View key={sectionIndex}>
-              <Text className="font-heading text-base mb-6 text-neutral-600">
-                {section.title === 'traditional' && 'Tradicionais'}
-                {section.title === 'sweet' && 'Doces'}
-                {section.title === 'specialty' && 'Especiais'}
-              </Text>
-
-              {section.data.map((item, index) => (
-                <CoffeeCardItem
-                  key={index}
-                  data={item}
-                  onPress={() => handleCoffeeDetails(item)}
-                />
-              ))}
-            </View>
-          ))}
-        </Animated.View>
-      </Animated.ScrollView> */}
     </View>
   )
 }
