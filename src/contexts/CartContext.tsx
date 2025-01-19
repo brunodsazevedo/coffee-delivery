@@ -65,7 +65,7 @@ export function CartProvider({ children }: CartProviderProps) {
 
   function onRemoveCartItem(cartItem: CartItemProps) {
     const cartUpdated = cart.filter(
-      (item) => item.id !== cartItem.id && item.size !== cartItem.size,
+      (item) => !(item.id === cartItem.id && item.size === cartItem.size),
     )
 
     setCart(cartUpdated)
