@@ -1,10 +1,12 @@
+import { ReactNode } from 'react'
 import { Text, TouchableOpacity, TouchableOpacityProps } from 'react-native'
 import { twMerge } from 'tailwind-merge'
 
 type Props = TouchableOpacityProps & {
-  title: string
+  title?: string
   variant?: 'filled' | 'outlined'
   textColor?: string
+  children?: ReactNode
 }
 
 export function Button({
@@ -12,6 +14,7 @@ export function Button({
   variant = 'filled',
   textColor,
   className,
+  children,
   ...rest
 }: Props) {
   const VARIANT = {
@@ -34,14 +37,18 @@ export function Button({
       )}
       {...rest}
     >
-      <Text
-        className={twMerge(
-          'font-button text-sm leading-relaxed uppercase text-white',
-          TEXT[variant],
-        )}
-      >
-        {title}
-      </Text>
+      {title && (
+        <Text
+          className={twMerge(
+            'font-button text-sm leading-relaxed uppercase text-white',
+            TEXT[variant],
+          )}
+        >
+          {title}
+        </Text>
+      )}
+
+      {children}
     </TouchableOpacity>
   )
 }

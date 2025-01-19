@@ -3,7 +3,7 @@ import { createContext, ReactNode, useState } from 'react'
 import { CoffeeDTO } from '@/constants/coffees'
 
 export type CartItemProps = CoffeeDTO & {
-  size: '114ml' | '140ml' | '227ml'
+  size: '114ml' | '140ml' | '227ml' | undefined
   amount: number
 }
 

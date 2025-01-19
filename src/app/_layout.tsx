@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { SplashScreen, Stack } from 'expo-router'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
@@ -7,10 +8,13 @@ import {
   Roboto_700Bold,
 } from '@expo-google-fonts/roboto'
 import { Baloo2_700Bold } from '@expo-google-fonts/baloo-2'
+import Toast from 'react-native-toast-message'
+
+import { CartProvider } from '@/contexts/CartContext'
+
+import { toastConfig } from '@/components/Toast'
 
 import '@/theme/global.css'
-import { useEffect } from 'react'
-import { CartProvider } from '@/contexts/CartContext'
 
 SplashScreen.preventAutoHideAsync()
 
@@ -39,6 +43,13 @@ export default function RootLayout() {
             screenOptions={{
               headerShown: false,
             }}
+          />
+
+          <Toast
+            config={toastConfig}
+            bottomOffset={0}
+            position="bottom"
+            visibilityTime={5000}
           />
         </CartProvider>
       </SafeAreaProvider>

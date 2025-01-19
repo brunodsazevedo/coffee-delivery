@@ -3,6 +3,7 @@ import { View, Text, Image } from 'react-native'
 import { router, useLocalSearchParams } from 'expo-router'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { twMerge } from 'tailwind-merge'
+import toast from 'react-native-toast-message'
 
 import { Header } from '@/components/Header'
 import { IconButton } from '@/components/IconButton'
@@ -27,8 +28,8 @@ type RouteParamsProps = {
 export default function Product() {
   const [amount, setAmount] = useState(1)
   const [sizeCupSelected, setSizeCupSelected] = useState<
-    '114ml' | '140ml' | '227ml'
-  >('114ml')
+    '114ml' | '140ml' | '227ml' | undefined
+  >(undefined)
 
   const { cart, onAddCartItem } = useCart()
 
@@ -68,12 +69,12 @@ export default function Product() {
 
     onAddCartItem(newCartItem)
 
-    router.push({
-      pathname: '/catalog',
-      params: {
-        newCartItem: JSON.stringify(newCartItem),
-      },
+    toast.show({
+      type: 'cartToast',
+      props: { data: newCartItem },
     })
+
+    router.back()
   }
 
   function handleGoCart() {
