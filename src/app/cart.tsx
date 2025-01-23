@@ -12,7 +12,6 @@ import Animated, {
 import { Header } from '@/components/Header'
 import { Button } from '@/components/Button'
 import { CartItem } from '@/components/CartItem'
-import { ListEmpty } from '@/components/ListEmpty'
 
 import { CartItemProps } from '@/contexts/CartContext'
 
@@ -21,6 +20,7 @@ import { useCart } from '@/hooks/useCart'
 import themeColors from '@/theme/colors'
 
 import TrashIcon from '@/assets/icons/trash.svg'
+import CartIcon from '@/assets/icons/shopping-cart.svg'
 
 export default function Cart() {
   const { cart, total, onUpdateCartItem, onRemoveCartItem } = useCart()
@@ -98,8 +98,6 @@ export default function Cart() {
             cart.length === 0
               ? {
                   flex: 1,
-                  justifyContent: 'center',
-                  alignItems: 'center',
                   paddingHorizontal: 32,
                 }
               : undefined
@@ -143,7 +141,19 @@ export default function Cart() {
             </Animated.View>
           )}
           ListEmptyComponent={
-            <ListEmpty message="Carrinho vazio! Adicione seu café favorito para continuar" />
+            <View className="items-center justify-center gap-y-6 mt-16">
+              <View className="items-center justify-center gap-y-3">
+                <CartIcon height={32} color={themeColors.neutral[500]} />
+
+                <Text className="font-body text-base text-center text-neutral-600">
+                  Seu carrinho está vazio
+                </Text>
+              </View>
+
+              <View className="w-3/5">
+                <Button title="Ver catálogo" onPress={handleBack} />
+              </View>
+            </View>
           }
         />
       </View>

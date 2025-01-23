@@ -36,22 +36,17 @@ export function Header({
           iconColor={iconColor || themeColors.neutral[900]}
           onPress={onBack}
         />
-
-        {title && (
-          <View className="flex-1 items-center justify-center">
-            <Text
-              className={twMerge(
-                'font-heading text-xl text-center',
-                titleColor,
-              )}
-            >
-              {title}
-            </Text>
-          </View>
-        )}
       </View>
 
-      <View>{rightElement && rightElement}</View>
+      <View className="flex-1 items-center justify-center">
+        <Text
+          className={twMerge('font-heading text-xl text-center', titleColor)}
+        >
+          {title}
+        </Text>
+      </View>
+
+      <View className="h-10 w-10">{rightElement && rightElement}</View>
     </SafeAreaView>
   )
 }
