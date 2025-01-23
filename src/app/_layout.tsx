@@ -49,7 +49,7 @@ export default function RootLayout() {
             config={toastConfig}
             bottomOffset={0}
             position="bottom"
-            visibilityTime={5000}
+            visibilityTime={3000}
           />
         </CartProvider>
       </SafeAreaProvider>

@@ -1,6 +1,13 @@
-import { FlatList, Text, View } from 'react-native'
+import { useRef } from 'react'
+import { Alert, FlatList, Text, View } from 'react-native'
 import { router } from 'expo-router'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { Swipeable } from 'react-native-gesture-handler'
+import Animated, {
+  FadeIn,
+  FadeOut,
+  LinearTransition,
+} from 'react-native-reanimated'
 
 import { Header } from '@/components/Header'
 import { Button } from '@/components/Button'
@@ -11,8 +18,14 @@ import { CartItemProps } from '@/contexts/CartContext'
 
 import { useCart } from '@/hooks/useCart'
 
+import themeColors from '@/theme/colors'
+
+import TrashIcon from '@/assets/icons/trash.svg'
+
 export default function Cart() {
   const { cart, total, onUpdateCartItem, onRemoveCartItem } = useCart()
+
+  const swipeableRefs = useRef<Swipeable[]>([])
 
   const totalFormatted = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
@@ -53,8 +66,20 @@ export default function Cart() {
     }
   }
 
-  function handleRemoveCartItem(cartItem: CartItemProps) {
-    onRemoveCartItem(cartItem)
+  function handleRemoveCartItem(cartItem: CartItemProps, index: number) {
+    Alert.alert('Remover', `Deseja remover ${cartItem.name} de seu carrinho?`, [
+      {
+        text: 'Sim',
+        onPress: () => onRemoveCartItem(cartItem),
+      },
+      {
+        text: 'Não',
+        style: 'cancel',
+        onPress: () => {
+          swipeableRefs.current?.[index].close()
+        },
+      },
+    ])
   }
 
   function handleFinish() {
@@ -79,13 +104,43 @@ export default function Cart() {
                 }
               : undefined
           }
-          renderItem={({ item }) => (
-            <CartItem
-              data={item}
-              onPlusItem={() => handleAddAmountCart(item)}
-              onMinusItem={() => handleRemoveAmountCart(item)}
-              onRemove={() => handleRemoveCartItem(item)}
-            />
+          renderItem={({ item, index }) => (
+            <Animated.View
+              entering={FadeIn}
+              exiting={FadeOut}
+              layout={LinearTransition.springify()}
+            >
+              <Swipeable
+                ref={(ref) => {
+                  if (ref) {
+                    swipeableRefs.current.push(ref)
+                  }
+                }}
+                leftThreshold={100}
+                onSwipeableOpen={() => handleRemoveCartItem(item, index)}
+                renderRightActions={() => null}
+                renderLeftActions={() => (
+                  <View className="w-full">
+                    <View className="h-full w-24 items-center justify-center bg-feedback-300">
+                      <TrashIcon
+                        height={32}
+                        color={themeColors.feedback[700]}
+                      />
+                    </View>
+                  </View>
+                )}
+                containerStyle={{
+                  backgroundColor: themeColors.feedback[300],
+                }}
+              >
+                <CartItem
+                  data={item}
+                  onPlusItem={() => handleAddAmountCart(item)}
+                  onMinusItem={() => handleRemoveAmountCart(item)}
+                  onRemove={() => handleRemoveCartItem(item, index)}
+                />
+              </Swipeable>
+            </Animated.View>
           )}
           ListEmptyComponent={
             <ListEmpty message="Carrinho vazio! Adicione seu café favorito para continuar" />

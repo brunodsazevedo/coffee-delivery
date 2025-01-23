@@ -28,7 +28,7 @@ export function CartItem({ data, onMinusItem, onPlusItem, onRemove }: Props) {
   }).format(totalItem)
 
   return (
-    <View className="flex-row justify-between px-8 py-4 border-y border-y-neutral-300">
+    <View className="flex-row justify-between px-8 py-4 border-y border-y-neutral-300 bg-neutral-100">
       <View className="flex-row items-center gap-x-4">
         <Image
           source={data.image}
