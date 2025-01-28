@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { StatusBar } from 'react-native'
 import { SplashScreen, Stack } from 'expo-router'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
@@ -39,6 +40,12 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <CartProvider>
+          <StatusBar
+            barStyle="dark-content"
+            translucent
+            backgroundColor="transparent"
+          />
+
           <Stack
             screenOptions={{
               headerShown: false,

@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useRef, useState } from 'react'
 import { View, Text, Image, ViewToken, FlatList } from 'react-native'
@@ -13,6 +14,7 @@ import Animated, {
   FadeInDown,
   SlideInRight,
 } from 'react-native-reanimated'
+// import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 
 import { Input } from '@/components/Input'
 import { CatalogHeader } from '@/components/CatalogHeader'
@@ -37,6 +39,7 @@ type ChangeCoffeeSectionListProps = {
 }
 
 export default function Catalog() {
+  const [searchText, setSearchText] = useState('')
   const [indexCoffeeSectionList, setIndexCoffeeSectionList] = useState(0)
   const [isScrolling, setIsScrolling] = useState(true)
 
@@ -51,14 +54,33 @@ export default function Catalog() {
 
   const safeAreaInsets = useSafeAreaInsets()
 
-  const coffeeSectionData = sectionListFormatted(coffees, 'type')
+  const coffeeDataFiltered = coffees.filter((data) => {
+    if (searchText.length > 0) {
+      const searchTextFormatted = searchText
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toUpperCase()
+
+      const coffeeNameFormatted = data.name
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toUpperCase()
+
+      return coffeeNameFormatted.includes(searchTextFormatted)
+    }
+  })
+
+  const coffeeSectionData = sectionListFormatted(
+    searchText.length > 0 ? coffeeDataFiltered : coffees,
+    'type',
+  )
 
   const scrollY = useSharedValue(0)
 
   const flatListStyle = useAnimatedStyle(() => ({
     paddingTop: interpolate(
       scrollY.value,
-      [590, 620],
+      [590, 700],
       [0, safeAreaInsets.top + 150],
       Extrapolation.CLAMP,
     ),
@@ -72,7 +94,7 @@ export default function Catalog() {
     backgroundColor: themeColors.neutral[100],
     opacity: interpolate(
       scrollY.value,
-      [590, 620],
+      [590, 700],
       [0, 1],
       Extrapolation.CLAMP,
     ),
@@ -80,7 +102,7 @@ export default function Catalog() {
       {
         translateY: interpolate(
           scrollY.value,
-          [590, 620],
+          [590, 700],
           [-40, 0],
           Extrapolation.CLAMP,
         ),
@@ -92,7 +114,7 @@ export default function Catalog() {
     marginBottom: 40,
     opacity: interpolate(
       scrollY.value,
-      [590, 620],
+      [590, 700],
       [1, 0],
       Extrapolation.CLAMP,
     ),
@@ -100,7 +122,7 @@ export default function Catalog() {
       {
         translateY: interpolate(
           scrollY.value,
-          [590, 620],
+          [590, 700],
           [0, -500],
           Extrapolation.CLAMP,
         ),
@@ -140,7 +162,7 @@ export default function Catalog() {
   }, [isScrolling])
 
   return (
-    <View className="flex-1 bg-neutral-100">
+    <View className="h-full bg-neutral-100">
       <Animated.View
         style={headerFixedStyle}
         className="shadow shadow-black/10 bg-neutral-100"
@@ -206,7 +228,12 @@ export default function Catalog() {
 
                 <View className="items-end">
                   <View className="w-full">
-                    <Input placeholder="Pesquisar" leftIcon={SearchIcon} />
+                    <Input
+                      value={searchText}
+                      onChangeText={setSearchText}
+                      placeholder="Pesquisar"
+                      leftIcon={SearchIcon}
+                    />
                   </View>
 
                   <View>
