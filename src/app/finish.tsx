@@ -1,5 +1,11 @@
 import { View, Text } from 'react-native'
 import { router } from 'expo-router'
+import Animated, {
+  Easing,
+  FadeIn,
+  FadeInUp,
+  SlideInLeft,
+} from 'react-native-reanimated'
 
 import { Button } from '@/components/Button'
 
@@ -19,10 +25,19 @@ export default function Finish() {
   return (
     <View className="flex-1 bg-neutral-100">
       <View className="flex-1 items-center justify-center px-8 gap-y-12">
-        <DeliverySvg />
+        <Animated.View
+          entering={SlideInLeft.delay(500)
+            .duration(1000)
+            .easing(Easing.elastic(1))}
+        >
+          <DeliverySvg />
+        </Animated.View>
 
-        <View className="items-center justify-center gap-y-2">
-          <Text className="font-heading text-2xl text-center text-secondary-700">
+        <Animated.View
+          entering={FadeInUp.delay(500).duration(1000)}
+          className="items-center justify-center gap-y-2"
+        >
+          <Text className="font-heading text-3xl text-center text-secondary-700">
             Uhu! Pedido confirmado
           </Text>
 
@@ -30,11 +45,11 @@ export default function Finish() {
             Agora é só aguardar que logo o café{'\n'}
             chegará até você!
           </Text>
-        </View>
+        </Animated.View>
 
-        <View className="w-full">
+        <Animated.View entering={FadeIn.delay(1500)} className="w-3/4">
           <Button title="Ir para a home" onPress={handleGoHome} />
-        </View>
+        </Animated.View>
       </View>
     </View>
   )
