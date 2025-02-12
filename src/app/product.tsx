@@ -1,13 +1,21 @@
-import { useState } from 'react'
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useEffect, useState } from 'react'
 import { View, Text, Image } from 'react-native'
 import { router, useLocalSearchParams } from 'expo-router'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { twMerge } from 'tailwind-merge'
 import toast from 'react-native-toast-message'
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withSequence,
+  withTiming,
+} from 'react-native-reanimated'
 
 import { Header } from '@/components/Header'
 import { IconButton } from '@/components/IconButton'
 import { Button } from '@/components/Button'
+import { SizeCupButton } from '@/components/SizeCupButton'
 
 import themeColors from '@/theme/colors'
 
@@ -26,6 +34,7 @@ type RouteParamsProps = {
 }
 
 export default function Product() {
+  const [isError, setIsError] = useState(false)
   const [amount, setAmount] = useState(1)
   const [sizeCupSelected, setSizeCupSelected] = useState<
     '114ml' | '140ml' | '227ml' | undefined
@@ -34,6 +43,12 @@ export default function Product() {
   const { cart, onAddCartItem } = useCart()
 
   const routeParams = useLocalSearchParams<RouteParamsProps>()
+
+  const labelColor = useSharedValue(themeColors.neutral[700])
+
+  const animatedLabelStyle = useAnimatedStyle(() => ({
+    color: labelColor.value,
+  }))
 
   const productData: CoffeeDTO = JSON.parse(routeParams.productData)
 
@@ -61,6 +76,10 @@ export default function Product() {
   }
 
   function handleAddCart() {
+    if (!sizeCupSelected) {
+      return setIsError(true)
+    }
+
     const newCartItem = {
       ...productData,
       amount,
@@ -80,6 +99,24 @@ export default function Product() {
   function handleGoCart() {
     router.push('/cart')
   }
+
+  function handleToggleError() {
+    setIsError(false)
+  }
+
+  useEffect(() => {
+    if (isError) {
+      withSequence(
+        (labelColor.value = themeColors.feedback[700]),
+        (labelColor.value = withDelay(
+          400,
+          withTiming(themeColors.neutral[700], { duration: 800 }),
+        )),
+      )
+
+      handleToggleError()
+    }
+  }, [isError])
 
   return (
     <View className="flex-1 bg-neutral-900">
@@ -157,52 +194,37 @@ export default function Product() {
         </View>
 
         <View className="gap-y-2">
-          <Text className="font-body text-base text-neutral-600">
+          <Animated.Text
+            style={animatedLabelStyle}
+            className="font-body text-base"
+          >
             Selecione o tamanho:
-          </Text>
+          </Animated.Text>
 
           <View className="flex-row items-center justify-between gap-x-2">
             <View className="flex-1">
-              <Button
+              <SizeCupButton
                 title="114ml"
-                variant={sizeCupSelected === '114ml' ? 'outlined' : 'filled'}
-                textColor={
-                  sizeCupSelected !== '114ml' ? 'text-neutral-700' : undefined
-                }
-                className={twMerge(
-                  'bg-neutral-300',
-                  sizeCupSelected === '114ml' && 'bg-transparent',
-                )}
+                isSelected={sizeCupSelected === '114ml'}
+                isError={isError}
                 onPress={() => handleSelectSizeCup('114ml')}
               />
             </View>
 
             <View className="flex-1">
-              <Button
+              <SizeCupButton
                 title="140ml"
-                variant={sizeCupSelected === '140ml' ? 'outlined' : 'filled'}
-                textColor={
-                  sizeCupSelected !== '140ml' ? 'text-neutral-700' : undefined
-                }
-                className={twMerge(
-                  'bg-neutral-300',
-                  sizeCupSelected === '140ml' && 'bg-transparent',
-                )}
+                isSelected={sizeCupSelected === '140ml'}
+                isError={isError}
                 onPress={() => handleSelectSizeCup('140ml')}
               />
             </View>
 
             <View className="flex-1">
-              <Button
+              <SizeCupButton
                 title="227ml"
-                variant={sizeCupSelected === '227ml' ? 'outlined' : 'filled'}
-                textColor={
-                  sizeCupSelected !== '227ml' ? 'text-neutral-700' : undefined
-                }
-                className={twMerge(
-                  'bg-neutral-300',
-                  sizeCupSelected === '227ml' && 'bg-transparent',
-                )}
+                isSelected={sizeCupSelected === '227ml'}
+                isError={isError}
                 onPress={() => handleSelectSizeCup('227ml')}
               />
             </View>
