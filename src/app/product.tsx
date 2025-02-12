@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react'
 import { View, Text, Image } from 'react-native'
+import * as Haptics from 'expo-haptics'
 import { router, useLocalSearchParams } from 'expo-router'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import toast from 'react-native-toast-message'
@@ -66,11 +67,13 @@ export default function Product() {
   }
 
   function handleAddCups() {
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
     setAmount((prevState) => prevState + 1)
   }
 
   function handleRemoveCups() {
     if (amount > 1) {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
       setAmount((prevState) => prevState - 1)
     }
   }

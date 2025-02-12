@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import { Alert, FlatList, Text, View } from 'react-native'
 import { router } from 'expo-router'
+import * as Haptics from 'expo-haptics'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Swipeable } from 'react-native-gesture-handler'
 import Animated, {
@@ -49,6 +50,7 @@ export default function Cart() {
     cartItemUpdated.amount = cartItem.amount + 1
 
     onUpdateCartItem(cartItemUpdated)
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
   }
 
   function handleRemoveAmountCart(cartItem: CartItemProps) {
@@ -63,6 +65,7 @@ export default function Cart() {
       cartItemUpdated.amount = cartItem.amount - 1
 
       onUpdateCartItem(cartItemUpdated)
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
     }
   }
 
