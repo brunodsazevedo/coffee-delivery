@@ -14,7 +14,6 @@ import Animated, {
   FadeInDown,
   SlideInRight,
 } from 'react-native-reanimated'
-// import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 
 import { Input } from '@/components/Input'
 import { CatalogHeader } from '@/components/CatalogHeader'
@@ -28,10 +27,10 @@ import { featuredCoffees, coffees, CoffeeDTO } from '@/constants/coffees'
 import themeColors from '@/theme/colors'
 
 import { sectionListFormatted } from '@/utils/arrayUtils'
+import { coffeeTypeTranslation } from '@/utils/coffeeTypeTranslation'
 
 import SearchIcon from '@/assets/icons/magnifying-glass.svg'
 import CoffeeBeansImg from '@/assets/images/coffee-beans-img.png'
-import { coffeeTypeTranslation } from '@/utils/coffeeTypeTranslation'
 
 type ChangeCoffeeSectionListProps = {
   viewableItems: ViewToken[]
@@ -266,27 +265,36 @@ export default function Catalog() {
               />
             </View>
 
-            <Animated.View
-              entering={FadeInDown.delay(1300).duration(800)}
-              className="py-4 px-8 mt-8 gap-y-3"
-            >
-              <Text className="font-heading text-base text-neutral-700">
-                Nossos cafés
-              </Text>
+            {coffeeSectionData.length > 0 && (
+              <Animated.View
+                entering={FadeInDown.delay(1300).duration(800)}
+                className="py-4 px-8 mt-8 gap-y-3"
+              >
+                <Text className="font-heading text-base text-neutral-700">
+                  Nossos cafés
+                </Text>
 
-              <View className="flex-row items-center gap-x-2">
-                {coffeeSectionData.map((section, sectionIndex) => (
-                  <View key={sectionIndex}>
-                    <SelectButton
-                      title={coffeeTypeTranslation(section.title)}
-                      selected={sectionIndex === indexCoffeeSectionList}
-                      onPress={() => handleScrollToSection(sectionIndex)}
-                    />
-                  </View>
-                ))}
-              </View>
-            </Animated.View>
+                <View className="flex-row items-center gap-x-2">
+                  {coffeeSectionData.map((section, sectionIndex) => (
+                    <View key={sectionIndex}>
+                      <SelectButton
+                        title={coffeeTypeTranslation(section.title)}
+                        selected={sectionIndex === indexCoffeeSectionList}
+                        onPress={() => handleScrollToSection(sectionIndex)}
+                      />
+                    </View>
+                  ))}
+                </View>
+              </Animated.View>
+            )}
           </Animated.View>
+        }
+        ListEmptyComponent={
+          <View className="p-8">
+            <Text className="font-body text-sm text-center text-neutral-700">
+              Não foi encontrado nenhum café com os parâmetros informados
+            </Text>
+          </View>
         }
       />
     </View>
