@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import { useRef } from 'react'
 import { Alert, FlatList, Text, View } from 'react-native'
 import { router } from 'expo-router'
@@ -22,6 +23,7 @@ import themeColors from '@/theme/colors'
 
 import TrashIcon from '@/assets/icons/trash.svg'
 import CartIcon from '@/assets/icons/shopping-cart.svg'
+import { Audio } from 'expo-av'
 
 export default function Cart() {
   const { cart, total, onUpdateCartItem, onRemoveCartItem } = useCart()
@@ -85,7 +87,12 @@ export default function Cart() {
     ])
   }
 
-  function handleFinish() {
+  async function handleFinish() {
+    const { sound } = await Audio.Sound.createAsync(
+      require('@/assets/sounds/soft-warm-positive-tone-success.mp3'),
+    )
+
+    await sound.playAsync()
     router.push('/finish')
   }
 

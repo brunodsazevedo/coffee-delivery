@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react'
 import { View, Text, Image } from 'react-native'
 import * as Haptics from 'expo-haptics'
+import { Audio } from 'expo-av'
 import { router, useLocalSearchParams } from 'expo-router'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import toast from 'react-native-toast-message'
@@ -78,25 +80,39 @@ export default function Product() {
     }
   }
 
-  function handleAddCart() {
-    if (!sizeCupSelected) {
-      return setIsError(true)
+  async function handleAddCart() {
+    try {
+      if (!sizeCupSelected) {
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
+        return setIsError(true)
+      }
+
+      const newCartItem = {
+        ...productData,
+        amount,
+        size: sizeCupSelected,
+      }
+
+      onAddCartItem(newCartItem)
+
+      const { sound } = await Audio.Sound.createAsync(
+        require('@/assets/sounds/bell-high-pitched-single-simple.mp3'),
+      )
+
+      await sound.playAsync()
+
+      toast.show({
+        type: 'cartToast',
+        props: { data: newCartItem },
+      })
+
+      router.back()
+    } catch (error) {
+      toast.show({
+        type: 'error',
+        text1: 'Erro ao adicionar café no carrinho!',
+      })
     }
-
-    const newCartItem = {
-      ...productData,
-      amount,
-      size: sizeCupSelected,
-    }
-
-    onAddCartItem(newCartItem)
-
-    toast.show({
-      type: 'cartToast',
-      props: { data: newCartItem },
-    })
-
-    router.back()
   }
 
   function handleGoCart() {
