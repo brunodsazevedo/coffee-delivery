@@ -15,8 +15,7 @@
 </p>
 
 <p align="center">
-  <a href="readme.md">README ENGLISH</a>
-  [README ENGLISH.md](readme.md)
+  <a href="https://github.com/brunodsazevedo/coffee-delivery">Read portuguese</a> | Readme portuguese
 </p>
 
 <div display: flex align="center">
