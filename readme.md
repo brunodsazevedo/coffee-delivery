@@ -40,8 +40,8 @@ Coffee Delivery is a mobile application for purchasing coffees. This challenge f
 - [x] NodeJS >= 20.0
 - [x] Expo >= 52
 - [x] Android Studio
-- [x] Xcode (apenas para macOS)
-- [x] Expo Go (opcional para devices)
+- [x] Xcode (only macOS)
+- [x] Expo Go (optional for device)
 
 ## Running the Project
 
