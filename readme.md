@@ -15,11 +15,11 @@
 </p>
 
 <p align="center">
-  [README PORTUGUESE.md] (readme-portuguese.md)
+  [README PORTUGUESE.md](readme-portuguese.md)
 </p>
 
 <div display: flex align="center">
-  <img alt="Cover" title="Cover" src=".github/assets/Cover.png" />
+  <img alt="Cover" title="Cover" src=".github/assets/cover.png" />
 </div>
 
 ## 💻 Project
@@ -55,6 +55,10 @@ npx expo start
 Caso queira utilizar o app em seu device, você pode utilizar o app **Expo Go** e testar todas as funcionalidades do app
 <br />
 If you want to use the app on your device, you can use the Expo Go app to test all the app's features. <br /> If your device is Android, open the Expo Go app, select the "Scan QR code" option, and if your device is iOS, open your camera app and point the open camera of both devices to scan the QR code below:
+
+<p align="center">
+  <img alt="QR Code EAS" src=".github/assets/eas-update-qrcode.svg" />
+</p>
 
 <br />
 
