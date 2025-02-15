@@ -14,6 +14,10 @@
   <img alt="License" src="https://img.shields.io/static/v1?label=license&message=MIT&color=00B37E&labelColor=0A1033">
 </p>
 
+<p align="center">
+  [README ENGLISH.md] (readme.md)
+</p>
+
 <div display: flex align="center">
   <img alt="Cover" title="Cover" src=".github/assets/Cover.png" />
 </div>
