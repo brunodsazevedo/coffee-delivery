@@ -15,7 +15,7 @@
 </p>
 
 <p align="center">
-  README ENGLISH | <a href="readme-portuguese.md">Read portuguese</a>
+  README ENGLISH | <a href="readme-portuguese.md">README PORTUGUESE</a>
 </p>
 
 <div display: flex align="center">
