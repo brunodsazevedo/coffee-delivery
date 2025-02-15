@@ -15,6 +15,7 @@
 </p>
 
 <p align="center">
+  <a href="readme.md">README ENGLISH</a>
   [README ENGLISH.md](readme.md)
 </p>
 
