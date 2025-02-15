@@ -46,7 +46,7 @@ export default function Catalog() {
 
   const indexCoffeeSectionChanged = useRef(
     (info: ChangeCoffeeSectionListProps) => {
-      const index = info.viewableItems[0].index!
+      const index = info.viewableItems[0]?.index || 0
       setIndexCoffeeSectionList(index)
     },
   )
@@ -161,7 +161,7 @@ export default function Catalog() {
   }, [isScrolling])
 
   return (
-    <View className="h-full bg-neutral-100">
+    <View className="flex-1 bg-neutral-100">
       <Animated.View
         style={headerFixedStyle}
         className="shadow shadow-black/10 bg-neutral-100"
@@ -180,7 +180,7 @@ export default function Catalog() {
         showsVerticalScrollIndicator={false}
         style={flatListStyle}
         contentContainerStyle={{
-          paddingBottom: 90,
+          paddingBottom: 180,
         }}
         onScroll={scrollHandler}
         onViewableItemsChanged={indexCoffeeSectionChanged.current}
